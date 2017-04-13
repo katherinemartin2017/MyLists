@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+            name="list"
+            type="com.russellmartin.mylistsapplication.model.ItemList"/>
+    </data>
+<RelativeLayout
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/imageListIcon"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:tint="@color/colorPrimary"
+        android:src="@drawable/list" />
+
+    <TextView
+        android:id="@+id/tvList"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="4dp"
+        android:layout_toEndOf="@+id/imageListIcon"
+        android:layout_toRightOf="@+id/imageListIcon"
+        android:text="@{list.list_text}"
+        android:tag="@{list.listID}"
+        android:textSize="24sp" />
+
+</RelativeLayout>
+    </layout>

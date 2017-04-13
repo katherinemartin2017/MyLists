@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable name="list" type="com.russellmartin.mylistsapplication.model.ItemList"/>
+        <variable name="lists" type="com.russellmartin.mylistsapplication.model.ItemListList"/>
+    </data>
+
+    <LinearLayout
+        android:orientation="vertical" android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/insert_new_list"
+            android:text="@={list.list_text}"
+            />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <Button
+                android:id="@+id/btnAdd"
+                android:layout_width="@dimen/btnSize"
+                android:layout_height="@dimen/btnSize"
+                android:text="@string/newList"
+                android:drawableTop="@drawable/plus"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                style="@android:style/Widget.Button" />
+
+            <Button
+                android:id="@+id/btnSave"
+                android:layout_width="@dimen/btnSize"
+                android:layout_height="@dimen/btnSize"
+                android:text="@string/save_list"
+                android:drawableTop="@android:drawable/ic_menu_save"
+                android:layout_alignParentTop="true"
+                android:layout_gravity="center_horizontal"
+                style="@android:style/Widget.Button"
+                android:layout_centerHorizontal="true" />
+
+
+            <Button
+                android:id="@+id/btnDelete"
+                android:layout_width="@dimen/btnSize"
+                android:layout_height="@dimen/btnSize"
+                android:layout_gravity="right"
+                android:text="@string/delete_list"
+                style="@android:style/Widget.Button"
+                android:drawableTop="@android:drawable/ic_menu_delete"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true" />
+
+        </RelativeLayout>
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/lvtheLists"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            bind:items="@{lists.Lists}"
+            />
+    </LinearLayout>
+</layout>
