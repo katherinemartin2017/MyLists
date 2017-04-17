@@ -8,9 +8,11 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
+import android.widget.Toast;
 
+
+import com.russellmartin.mylistsapplication.data.DatabaseHelper;
 import com.russellmartin.mylistsapplication.data.MyListsContract;
-
 
 public class TodosCursorAdapter extends CursorAdapter {
     public TodosCursorAdapter(Context context, Cursor c, boolean autoRequery) {
@@ -25,13 +27,13 @@ public class TodosCursorAdapter extends CursorAdapter {
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
         TextView todoTextView = (TextView) view.findViewById(R.id.tvNote);
-        CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkBox);
+        final CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkBox);
         int todoStatus = cursor.getColumnIndex(MyListsContract.TodosEntry.COLUMN_DONE);
         int textColumn = cursor.getColumnIndex(MyListsContract.TodosEntry.COLUMN_TEXT);
-        String text = cursor.getString(textColumn)
-            checkBox.setChecked(false);
-        }
-        
+        String text = cursor.getString(textColumn);
+        todoTextView.setText(text);
+
+        // save the row's _id value in the checkbox's tag for retrieval later
 
     }
 }

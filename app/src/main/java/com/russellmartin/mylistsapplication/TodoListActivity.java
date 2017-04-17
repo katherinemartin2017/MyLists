@@ -19,11 +19,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.ListView;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.DialogFragment;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 
 import com.russellmartin.mylistsapplication.data.DatabaseHelper;
@@ -41,6 +43,9 @@ import com.russellmartin.mylistsapplication.model.Todo;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.russellmartin.mylistsapplication.R.id.checkBox;
+import static com.russellmartin.mylistsapplication.R.id.checkbox;
 
 // This Android Activity was created by modifing code from the PluralSite tutorial --> Building your First Android App with SQLite
 // This Activity controls the list of todos items and the actions controlled on them
@@ -60,7 +65,84 @@ public class TodoListActivity extends AppCompatActivity
     Spinner spinner;
     CategoryListAdapter categoryAdapter;
 
-    
+    private void inflateApp() {
+        setContentView(R.layout.activity_main);
+        spinner = (Spinner) findViewById(R.id.spinCategories);
+        CheckBox chk = (CheckBox) findViewById(R.id.checkBox);
+        getLoaderManager().initLoader(URL_LOADER, null, this);
+        setCategories();
+        final ListView lv = (ListView) findViewById(R.id.lvTodos);
+        adapter = new TodosCursorAdapter(this, null, false);
+        lv.setAdapter(adapter);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Intent intent = getIntent();
+        //theList = (ItemList)intent.getSerializableExtra("theList");
+        theListId = intent.getIntExtra("theListId", 0);
+        setSupportActionBar(toolbar);
+
+
+
+        //Creates the editText for when an item is clicked
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int pos, long id) {
+                cursor = (Cursor) adapterView.getItemAtPosition(pos);
+                int todoID = cursor.getInt(cursor.getColumnIndex(TodosEntry._ID));
+                String todoText = cursor.getString(cursor.getColumnIndex(TodosEntry.COLUMN_TEXT));
+                String todoExpiredDate = cursor.getString(cursor.getColumnIndex(TodosEntry.COLUMN_EXPIRED));
+                int todoDone = cursor.getInt(cursor.getColumnIndex(TodosEntry.COLUMN_DONE));
+                String todoCreated = cursor.getString(cursor.getColumnIndex(TodosEntry.COLUMN_CREATED));
+                String todoCategory = cursor.getString(cursor.getColumnIndex(TodosEntry.COLUMN_CATEGORY));
+                String todoList = cursor.getString(cursor.getColumnIndex(TodosEntry.COLUMN_LIST));
+                boolean boolDone = (todoDone == 1);
+                Todo todo = new Todo(todoID, todoText, todoExpiredDate, todoCreated,
+                        boolDone, todoCategory, theListId);
+
+                Intent intent = new Intent(TodoListActivity.this, TodoActivity.class);
+                startActivityForResult(intent, 1);
+                intent.putExtra("todo", todo);
+                intent.putExtra("categories", list);
+                startActivity(intent);
+            }
+        });
+
+
+        // Controls when the User clicks the "Plus" fab in order to create new todos object
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Todo todo = new Todo(0, "", "", "", false, "0", theListId);
+                Intent i = new Intent(TodoListActivity.this, TodoActivity.class);
+                //pass the ID to the todoActivity
+                i.putExtra("todo", todo);
+                i.putExtra("categories", list);
+                startActivityForResult(i, 1);
+                startActivity(i);
+            }
+        });
+
+
+
+
+
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                if(position >= 0) {
+                    getLoaderManager().restartLoader(URL_LOADER, null, TodoListActivity.this);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                // do nothing
+
+            }
+        });
+
+    }
+
     private void updateTodo() {
         int id = 2;
         String[] args = {String.valueOf(id)};
@@ -148,75 +230,27 @@ public class TodoListActivity extends AppCompatActivity
         }
         c.close();*/
     }
+    @Override
+    public void onRestart()
+    {
+        super.onRestart();
+        inflateApp();
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 1) {
+            if(resultCode == RESULT_OK) {
+                int theListID =data.getIntExtra("theListID", 0);
+            }
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        spinner = (Spinner) findViewById(R.id.spinCategories);
-        getLoaderManager().initLoader(URL_LOADER, null, this);
-        setCategories();
-        final ListView lv = (ListView) findViewById(R.id.lvTodos);
-        adapter = new TodosCursorAdapter(this, null, false);
-        lv.setAdapter(adapter);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        Intent intent = getIntent();
-        //theList = (ItemList)intent.getSerializableExtra("theList");
-        theListId = intent.getIntExtra("theListId", 0);
-        setSupportActionBar(toolbar);
-
-
-        //Creates the editText for when an item is clicked
-        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int pos, long id) {
-                cursor = (Cursor) adapterView.getItemAtPosition(pos);
-                int todoID = cursor.getInt(cursor.getColumnIndex(TodosEntry._ID));
-                String todoText = cursor.getString(cursor.getColumnIndex(TodosEntry.COLUMN_TEXT));
-                String todoExpiredDate = cursor.getString(cursor.getColumnIndex(TodosEntry.COLUMN_EXPIRED));
-                int todoDone = cursor.getInt(cursor.getColumnIndex(TodosEntry.COLUMN_DONE));
-                String todoCreated = cursor.getString(cursor.getColumnIndex(TodosEntry.COLUMN_CREATED));
-                String todoCategory = cursor.getString(cursor.getColumnIndex(TodosEntry.COLUMN_CATEGORY));
-                String todoList = cursor.getString(cursor.getColumnIndex(TodosEntry.COLUMN_LIST));
-                boolean boolDone = (todoDone == 1);
-                Todo todo = new Todo(todoID, todoText, todoExpiredDate, todoCreated,
-                        boolDone, todoCategory, theListId);
-
-                Intent intent = new Intent(TodoListActivity.this, TodoActivity.class);
-                intent.putExtra("todo", todo);
-                intent.putExtra("categories", list);
-                startActivity(intent);
-            }
-        });
-
-        // Controls when the User clicks the "Plus" fab in order to create new todos object
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Todo todo = new Todo(0, "", "", "", false, "0", theListId);
-                Intent intent = new Intent(TodoListActivity.this, TodoActivity.class);
-                //pass the ID to the todoActivity
-                intent.putExtra("todo", todo);
-                intent.putExtra("categories", list);
-                startActivity(intent);
-            }
-        });
-
-    spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-        @Override
-        public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-            if(position >= 0) {
-                getLoaderManager().restartLoader(URL_LOADER, null, TodoListActivity.this);
-            }
-        }
-
-        @Override
-        public void onNothingSelected(AdapterView<?> adapterView) {
-            // do nothing
-
-        }
-    });
+        inflateApp();
 
     }
 

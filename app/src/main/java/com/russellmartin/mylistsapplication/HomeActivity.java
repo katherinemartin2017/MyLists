@@ -83,7 +83,6 @@ public class HomeActivity extends AppCompatActivity
                 cursor = (Cursor) adapterView.getItemAtPosition(pos);
                 int listID = cursor.getInt(cursor.getColumnIndex(MyListsContract.ListEntry._ID));
                 String listText = cursor.getString(cursor.getColumnIndex(MyListsContract.ListEntry.COLUMN_LIST_TEXT));
-
                 Intent intent = new Intent(HomeActivity.this, TodoListActivity.class);
                 intent.putExtra("theListId", listID);
                 startActivity(intent);

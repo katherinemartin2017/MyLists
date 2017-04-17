@@ -30,6 +30,7 @@ public class TodoActivity extends AppCompatActivity {
     CategoryList catList;
     ItemList lists;
     CategoryListAdapter adapter;
+    int theListId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +41,7 @@ public class TodoActivity extends AppCompatActivity {
                 DataBindingUtil.setContentView(this, R.layout.activity_todo);
         Intent intent = getIntent();
         todo = (Todo) intent.getSerializableExtra("todo");
+        theListId = intent.getIntExtra("theListId", 0);
         catList = (CategoryList) intent.getSerializableExtra("categories");
         adapter = new CategoryListAdapter(catList.CatList);
         spinner = (Spinner) findViewById(R.id.spCategories);
@@ -52,12 +54,10 @@ public class TodoActivity extends AppCompatActivity {
         } else {
             for (Category list : catList.CatList) {
                 position = 1;
-                Log.d("The CatList location: ", String.valueOf(Integer.valueOf(list.catID.get())));
-                Log.d("The loc. at spinner: ", String.valueOf(Integer.valueOf(todo.category.get())));
-                /*if (Integer.valueOf(list.catID.get()) == Integer.valueOf(todo.category.get())) {
+                if (Integer.valueOf(list.catID.get()) == Integer.valueOf(todo.category.get())) {
                     break;
                 }
-                position++; */
+                position++;
             }
             spinner.setSelection(position);
         }
@@ -92,6 +92,8 @@ public class TodoActivity extends AppCompatActivity {
                             handler.startDelete(1, null, uri
                                     , selection, arguments);
                             Intent intent = new Intent(TodoActivity.this, TodoListActivity.class);
+                            int listID = todo.lists.get();
+                            intent.putExtra("theListId", listID);
                             startActivity(intent);
 
                         }
@@ -127,6 +129,13 @@ public class TodoActivity extends AppCompatActivity {
         else if(todo != null && todo.id.get() == 0) {
             handler.startInsert(1,null,MyListsContract.TodosEntry.CONTENT_URI, values);
         }
+    }
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(TodoActivity.this, TodoListActivity.class);
+        int listID = todo.lists.get();
+        intent.putExtra("theListId", listID);
+        startActivity(intent);
     }
 }
 
