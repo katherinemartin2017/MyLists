@@ -69,6 +69,7 @@ public class HomeActivity extends AppCompatActivity
             final ListView lv = (ListView) findViewById(R.id.lvLists);
             adapter = new ListAdapter(this, cursor, false);
             lv.setAdapter(adapter);
+            this.deleteDatabase("mylist.db");
 
 
         // Adds the layout to the application including the list display and the toolbar
@@ -116,12 +117,17 @@ public class HomeActivity extends AppCompatActivity
         //noinspection SimplifiableIfStatement
 
         switch (id) {
+            case R.id.action_categories:
+                //get the categories cursor for the
+                Intent intent = new Intent(HomeActivity.this, CategoryActivity.class);
+                startActivity(intent);
+                break;
             case R.id.action_delete_all_lists:
                 deleteList(1);
                 break;
-            case R.id.action_create_test_data:
+            /*case R.id.action_create_test_data:
                 createTestLists();
-                break;
+                break;*/
         }
 
         return super.onOptionsItemSelected(item);

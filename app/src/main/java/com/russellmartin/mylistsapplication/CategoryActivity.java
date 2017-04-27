@@ -4,6 +4,7 @@ import android.app.LoaderManager;
 import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.databinding.DataBindingUtil;
@@ -156,6 +157,11 @@ public class CategoryActivity extends AppCompatActivity
         categories = new CategoryList(list);
         binding.setCategories(categories);
         binding.setCategory(category);
+    }
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(CategoryActivity.this, HomeActivity.class);
+        startActivity(intent);
     }
 
     @Override

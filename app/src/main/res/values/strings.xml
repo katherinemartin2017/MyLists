@@ -21,6 +21,7 @@
     <string name="delete_list">Delete List</string>
     <string name="delete_list_dialog_title">Are you sure you want to delete this list?</string>
     <string name="delete_list_dialog">Delete List</string>
+    <string name="action_home">Home</string>
 
     <string-array name="categories_array">
         <item>Home</item>

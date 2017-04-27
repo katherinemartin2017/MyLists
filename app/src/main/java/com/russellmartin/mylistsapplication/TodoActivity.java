@@ -11,9 +11,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.support.v7.app.AlertDialog;
+import android.widget.Toast;
 
 import com.russellmartin.mylistsapplication.data.MyListsContract;
 import com.russellmartin.mylistsapplication.data.TodosQueryHandler;
@@ -31,6 +35,8 @@ public class TodoActivity extends AppCompatActivity {
     ItemList lists;
     CategoryListAdapter adapter;
     int theListId;
+    Button done;
+    Button delete;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +50,8 @@ public class TodoActivity extends AppCompatActivity {
         theListId = intent.getIntExtra("theListId", 0);
         catList = (CategoryList) intent.getSerializableExtra("categories");
         adapter = new CategoryListAdapter(catList.CatList);
+        final Button done = (Button) findViewById(R.id.donebutton);
+        final Button delete = (Button) findViewById(R.id.deletebutton);
         spinner = (Spinner) findViewById(R.id.spCategories);
         spinner.setAdapter(adapter);
         //set the bindings
@@ -61,6 +69,61 @@ public class TodoActivity extends AppCompatActivity {
             }
             spinner.setSelection(position);
         }
+        delete.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                new AlertDialog.Builder(TodoActivity.this)
+                        .setTitle(getString(R.string.delete_todo_dialog_title))
+                        .setMessage(getString(R.string.delete_todo_dialog))
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                //delete
+                                Uri uri = Uri.withAppendedPath(MyListsContract.TodosEntry.CONTENT_URI, String.valueOf(todo.id.get()));
+
+                                String selection = MyListsContract.TodosEntry._ID + "=?";
+                                String[] arguments = new String[1];
+                                arguments[0] = String.valueOf(todo.id.get());
+
+                                handler.startDelete(1, null, uri
+                                        , selection, arguments);
+                                Intent intent = new Intent(TodoActivity.this, TodoListActivity.class);
+                                int listID = todo.lists.get();
+                                intent.putExtra("theListId", listID);
+                                startActivity(intent);
+
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, null).show();
+            }
+        });
+        done.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                String [] args = new String[1];
+                TodosQueryHandler handler =  new TodosQueryHandler(getContentResolver());
+                //save data(existing todo)
+                //read the current category
+                Category cat = (Category)spinner.getSelectedItem();
+                int catId = cat.catID.get();
+
+                ContentValues values = new ContentValues();
+                values.put(MyListsContract.TodosEntry.COLUMN_TEXT, todo.text.get());
+                values.put(MyListsContract.TodosEntry.COLUMN_CATEGORY, catId);
+                values.put(MyListsContract.TodosEntry.COLUMN_LIST, todo.lists.get());
+                values.put(MyListsContract.TodosEntry.COLUMN_DONE, todo.done.get());
+                values.put(MyListsContract.TodosEntry.COLUMN_EXPIRED, todo.expired.get());
+                if(todo != null && todo.id.get() != 0) {
+                    args[0] = String.valueOf(todo.id.get());
+                    handler.startUpdate(1,null,MyListsContract.TodosEntry.CONTENT_URI, values,
+                            MyListsContract.TodosEntry._ID + "=?", args);
+                    Toast.makeText(TodoActivity.this, "Item saved", Toast.LENGTH_SHORT).show();
+                }
+                else if(todo != null && todo.id.get() == 0) {
+                    handler.startInsert(1,null,MyListsContract.TodosEntry.CONTENT_URI, values);
+                    Toast.makeText(TodoActivity.this, "Item created", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     @Override
@@ -108,7 +171,7 @@ public class TodoActivity extends AppCompatActivity {
     @Override
     public void onPause() {
         super.onPause();  // Always call the superclass method first
-        String [] args = new String[1];
+        /*String [] args = new String[1];
         TodosQueryHandler handler =  new TodosQueryHandler(getContentResolver());
         //save data(existing todo)
         //read the current category
@@ -128,13 +191,14 @@ public class TodoActivity extends AppCompatActivity {
         }
         else if(todo != null && todo.id.get() == 0) {
             handler.startInsert(1,null,MyListsContract.TodosEntry.CONTENT_URI, values);
-        }
+        }*/
     }
+
     @Override
     public void onBackPressed() {
         Intent intent = new Intent(TodoActivity.this, TodoListActivity.class);
-        int listID = todo.lists.get();
-        intent.putExtra("theListId", listID);
+        int theListId = todo.lists.get();
+        intent.putExtra("theListId", theListId);
         startActivity(intent);
     }
 }

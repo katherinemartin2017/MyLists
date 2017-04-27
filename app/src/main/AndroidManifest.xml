@@ -19,7 +19,9 @@
             </intent-filter>
         </activity>
         <activity android:name="com.russellmartin.mylistsapplication.TodoActivity"
-            android:parentActivityName="com.russellmartin.mylistsapplication.TodoListActivity"/>
+            android:parentActivityName="com.russellmartin.mylistsapplication.TodoListActivity"
+            android:theme="@style/AppTheme.NoActionBar"/>
+
         <activity android:name="com.russellmartin.mylistsapplication.TodoListActivity"
             android:label="List Content"
             android:theme="@style/AppTheme.NoActionBar"

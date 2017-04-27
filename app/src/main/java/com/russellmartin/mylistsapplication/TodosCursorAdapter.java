@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -28,12 +29,11 @@ public class TodosCursorAdapter extends CursorAdapter {
     public void bindView(View view, Context context, Cursor cursor) {
         TextView todoTextView = (TextView) view.findViewById(R.id.tvNote);
         final CheckBox checkBox = (CheckBox) view.findViewById(R.id.checkBox);
-        int todoStatus = cursor.getColumnIndex(MyListsContract.TodosEntry.COLUMN_DONE);
         int textColumn = cursor.getColumnIndex(MyListsContract.TodosEntry.COLUMN_TEXT);
         String text = cursor.getString(textColumn);
         todoTextView.setText(text);
 
-        // save the row's _id value in the checkbox's tag for retrieval later
+        checkBox.setChecked((cursor.getInt(cursor.getColumnIndex(MyListsContract.TodosEntry.COLUMN_DONE))==0? false:true));
 
     }
 }

@@ -20,6 +20,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -101,11 +102,38 @@ public class TodoListActivity extends AppCompatActivity
                 Intent intent = new Intent(TodoListActivity.this, TodoActivity.class);
                 startActivityForResult(intent, 1);
                 intent.putExtra("todo", todo);
+                intent.putExtra("theCat", todoCategory);
                 intent.putExtra("categories", list);
+                intent.putExtra("theListId", todoList);
                 startActivity(intent);
             }
         });
 
+        /*int todoDone = cursor.getInt(cursor.getColumnIndex(TodosEntry.COLUMN_DONE));
+
+        if(todoDone == 0){
+            chk.setChecked(true);
+        }
+
+
+        chk.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if (b)
+                {
+                    String id = String.valueOf(childPosition+1);
+                    db.updateIsChecked(id);
+                }
+                else
+                {
+                    String id = String.valueOf(childPosition+1);
+                    db.updateIsNotChecked(id);
+                }
+
+                notifyDataSetChanged();
+            }
+        });*/
 
         // Controls when the User clicks the "Plus" fab in order to create new todos object
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -270,16 +298,12 @@ public class TodoListActivity extends AppCompatActivity
         //noinspection SimplifiableIfStatement
 
         switch (id) {
-            case R.id.action_categories:
-                //get the categories cursor for the
-                Intent intent = new Intent(TodoListActivity.this, CategoryActivity.class);
-                startActivity(intent);
-                break;
             case R.id.action_delete_all_todos:
                 deleteTodo(1);
                 break;
-            case R.id.action_create_test_data:
-                createTestTodos();
+            case R.id.action_home:
+                Intent intent = new Intent(TodoListActivity.this, HomeActivity.class);
+                startActivity(intent);
                 break;
         }
 
@@ -362,5 +386,10 @@ public class TodoListActivity extends AppCompatActivity
     public void onLoaderReset(Loader<Cursor> loader) {
         adapter.swapCursor(null);
 
+    }
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(TodoListActivity.this, HomeActivity.class);
+        startActivity(intent);
     }
 }

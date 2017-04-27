@@ -4,10 +4,13 @@ import android.app.LoaderManager;
 import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.databinding.DataBindingUtil;
 import android.databinding.ObservableArrayList;
+import android.databinding.ObservableInt;
 import android.net.Uri;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -20,7 +23,9 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.russellmartin.mylistsapplication.data.DatabaseHelper;
 import com.russellmartin.mylistsapplication.data.MyListsContract;
+import com.russellmartin.mylistsapplication.data.MyListsProvider;
 import com.russellmartin.mylistsapplication.data.TodosQueryHandler;
 import com.russellmartin.mylistsapplication.databinding.ActivityListBinding;
 import com.russellmartin.mylistsapplication.model.ItemList;
@@ -28,6 +33,7 @@ import com.russellmartin.mylistsapplication.model.ItemListList;
 
 public class ItemListActivity extends AppCompatActivity
         implements LoaderManager.LoaderCallbacks<Cursor> {
+    private static final int ALL_RECORDS = -1;
     protected ItemList l;
     protected ItemListList ls;
     private static final int URL_LOADER = 0;
@@ -44,6 +50,7 @@ public class ItemListActivity extends AppCompatActivity
         binding = DataBindingUtil.setContentView(this, R.layout.activity_list);
         getLoaderManager().initLoader(URL_LOADER, null, this);
         handler = new TodosQueryHandler(getContentResolver());
+        final DatabaseHelper databaseHelper = new DatabaseHelper(this);
 
         ListView myList = (ListView) findViewById(R.id.lvtheLists);
         myList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -66,19 +73,22 @@ public class ItemListActivity extends AppCompatActivity
         btnDelete.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 new AlertDialog.Builder(ItemListActivity.this)
-                        .setTitle(getString(R.string.delete_list_dialog))
+                        .setTitle(getString(R.string.delete_list))
                         .setMessage(getString(R.string.delete_list_dialog_title))
                         .setIcon(android.R.drawable.ic_dialog_alert)
                         .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int whichButton) {
                                 //delete
-                                ls.Lists.remove(l);
                                 Toast.makeText(ItemListActivity.this, "List deleted", Toast.LENGTH_SHORT).show();
-                                String[] args = new String[1];
-                                Uri uri = Uri.withAppendedPath(MyListsContract.CategoriesEntry.CONTENT_URI, String.valueOf(l.listID.get()));
+                                Uri uri = Uri.withAppendedPath(MyListsContract.ListEntry.CONTENT_URI, String.valueOf(l.listID.get()));
+
+                                String selection = MyListsContract.ListEntry._ID + "=?";
+                                String[] arguments = new String[1];
+                                arguments[0] = String.valueOf(l.listID.get());
+
                                 handler.startDelete(1, null, uri
-                                        , null, null);
-                                l = null;
+                                        , selection, arguments);
+
                             }
                         })
                         .setNegativeButton(android.R.string.no, null).show();
@@ -162,5 +172,11 @@ public class ItemListActivity extends AppCompatActivity
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         adapter.list = null;
+    }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(ItemListActivity.this, HomeActivity.class);
+        startActivity(intent);
     }
 }

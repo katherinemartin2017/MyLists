@@ -12,7 +12,7 @@
 
         <EditText
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="69dp"
             android:hint="@string/insert_new_category"
             android:text="@={category.description}"
             />
@@ -26,9 +26,12 @@
                 android:layout_height="@dimen/btnSize"
                 android:text="@string/newCategory"
                 android:drawableTop="@drawable/tag_text_outline"
+                style="@android:style/Widget.Button"
+                android:layout_marginRight="13dp"
+                android:layout_marginEnd="13dp"
                 android:layout_alignParentTop="true"
-                android:layout_alignParentLeft="true"
-                style="@android:style/Widget.Button" />
+                android:layout_toLeftOf="@+id/btnSave"
+                android:layout_toStartOf="@+id/btnSave" />
 
             <Button
                 android:id="@+id/btnSave"
@@ -50,8 +53,11 @@
                 android:text="@string/delete_category"
                 style="@android:style/Widget.Button"
                 android:drawableTop="@android:drawable/ic_menu_delete"
+                android:layout_marginLeft="12dp"
+                android:layout_marginStart="12dp"
                 android:layout_alignParentTop="true"
-                android:layout_alignParentRight="true" />
+                android:layout_toRightOf="@+id/btnSave"
+                android:layout_toEndOf="@+id/btnSave" />
 
         </RelativeLayout>
         <ListView
