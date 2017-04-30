@@ -18,6 +18,7 @@
         android:id="@+id/checkBox"
         android:focusable="false"
         android:focusableInTouchMode="false"
+        android:enabled="false"
         android:checked="@={todo.done}"
         android:tag="@{todo.id}"/>
 
@@ -30,7 +31,6 @@
         android:layout_margin="4dp"
         android:layout_toEndOf="@+id/checkBox"
         android:layout_toRightOf="@+id/checkBox"
-        android:text="Text"
         android:textSize="20sp" />
 
 </RelativeLayout>

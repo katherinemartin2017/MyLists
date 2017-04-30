@@ -360,7 +360,7 @@ public class TodoListActivity extends AppCompatActivity
                     TodosEntry.CONTENT_URI,
                     projection,
                     selection, arguments, null);
-        } else {
+    } else{
             String[] arguments = new String[2];
             selection += " AND " + TodosEntry.COLUMN_CATEGORY + "=?";
             arguments[0] = String.valueOf(theListId);

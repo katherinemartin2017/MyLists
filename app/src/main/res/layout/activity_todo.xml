@@ -35,15 +35,15 @@
         android:layout_height="wrap_content"
         android:inputType="textMultiLine"
         android:ems="10"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
         android:layout_below="@+id/spCategories"
         android:layout_alignParentTop="false"
         android:gravity="top"
         android:text="@={todo.text}"
         android:tag="@{todo.id}"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true" />
+        android:layout_alignParentEnd="true"
+        android:layout_alignLeft="@+id/deletebutton"
+        android:layout_alignStart="@+id/deletebutton" />
 
     <Button
         android:id="@+id/donebutton"
@@ -66,6 +66,16 @@
         android:layout_below="@+id/editTodo"
         android:layout_toLeftOf="@+id/donebutton"
         android:layout_toStartOf="@+id/donebutton" />
+
+    <CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checked="@={todo.done}"
+        android:text="Done"
+        android:layout_alignBaseline="@+id/editTodo"
+        android:layout_alignBottom="@+id/editTodo"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
 
 </RelativeLayout>

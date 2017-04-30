@@ -19,6 +19,7 @@ import android.widget.ListView;
 
 import com.russellmartin.mylistsapplication.data.ListsQueryHandler;
 import com.russellmartin.mylistsapplication.data.MyListsContract;
+import com.russellmartin.mylistsapplication.data.TodosQueryHandler;
 import com.russellmartin.mylistsapplication.model.ItemList;
 
 // This Android Activity was created by modifying code from the PluralSite tutorial --> Building your First Android App with SQLite
@@ -44,7 +45,18 @@ public class HomeActivity extends AppCompatActivity
         handler.startDelete(1, null, MyListsContract.ListEntry.CONTENT_URI, MyListsContract.ListEntry._ID + " =?", args);
 */
         getContentResolver().delete(MyListsContract.ListEntry.CONTENT_URI, MyListsContract.ListEntry._ID + "=" + id, null);
+        /*deletetheTodos(id);*/
     }
+    private void deletetheTodos(int id) {
+
+        String[] args = {String.valueOf(id)};
+        TodosQueryHandler handler = new TodosQueryHandler(
+                this.getContentResolver());
+        handler.startDelete(1, null, MyListsContract.TodosEntry.CONTENT_URI, MyListsContract.TodosEntry.COLUMN_LIST + " =?", args);
+
+        /*getContentResolver().delete(TodosEntry.CONTENT_URI,CategoriesEntry._ID + "=" + id, null);*/
+    }
+
     private void createTestLists() {
 
         for (int i = 1; i < 20; i++) {

@@ -42,6 +42,7 @@ public class ItemListActivity extends AppCompatActivity
     ItemListAdapter adapter;
     ActivityListBinding binding;
     TodosQueryHandler handler;
+    TodosQueryHandler h;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,13 +82,20 @@ public class ItemListActivity extends AppCompatActivity
                                 //delete
                                 Toast.makeText(ItemListActivity.this, "List deleted", Toast.LENGTH_SHORT).show();
                                 Uri uri = Uri.withAppendedPath(MyListsContract.ListEntry.CONTENT_URI, String.valueOf(l.listID.get()));
+                               /* Uri u = Uri.withAppendedPath(MyListsContract.TodosEntry.CONTENT_URI, String.valueOf(l.listID.get()));*/
 
                                 String selection = MyListsContract.ListEntry._ID + "=?";
                                 String[] arguments = new String[1];
                                 arguments[0] = String.valueOf(l.listID.get());
 
+                               /* String s = MyListsContract.TodosEntry.COLUMN_LIST + "=?";
+                                String[] args = new String[1];
+                                args[0] = String.valueOf(l.listID.get());*/
+
                                 handler.startDelete(1, null, uri
                                         , selection, arguments);
+
+                               /* h.startDelete(1, null, u, s, args);*/
 
                             }
                         })
