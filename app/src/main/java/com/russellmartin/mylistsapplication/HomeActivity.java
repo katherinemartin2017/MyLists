@@ -6,6 +6,7 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -17,6 +18,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.russellmartin.mylistsapplication.data.DatabaseHelper;
 import com.russellmartin.mylistsapplication.data.ListsQueryHandler;
 import com.russellmartin.mylistsapplication.data.MyListsContract;
 import com.russellmartin.mylistsapplication.data.TodosQueryHandler;
@@ -33,7 +35,10 @@ public class HomeActivity extends AppCompatActivity
     private static final int URL_LOADER = 0;
     Cursor cursor;
     ListAdapter adapter;
+    DatabaseHelper dbHelper = new DatabaseHelper(this);
+    SQLiteDatabase db;
 
+    // This delete lists based off of the ID entered
     private void deleteList(int id) {
 
         /*String[] args = {String.valueOf(id)};
@@ -47,6 +52,13 @@ public class HomeActivity extends AppCompatActivity
         getContentResolver().delete(MyListsContract.ListEntry.CONTENT_URI, MyListsContract.ListEntry._ID + "=" + id, null);
         /*deletetheTodos(id);*/
     }
+    // This clears the todos when all lists are deleted
+    public void clearAllTodoTable()   {
+        db = dbHelper.getWritableDatabase();
+        db.delete(MyListsContract.TodosEntry.TABLE_NAME, null,null);
+    }
+
+
     private void deletetheTodos(int id) {
 
         String[] args = {String.valueOf(id)};
@@ -135,7 +147,10 @@ public class HomeActivity extends AppCompatActivity
                 startActivity(intent);
                 break;
             case R.id.action_delete_all_lists:
+                //Deletes all of the lists and clears the entire todo table
                 deleteList(1);
+                clearAllTodoTable();
+
                 break;
             /*case R.id.action_create_test_data:
                 createTestLists();

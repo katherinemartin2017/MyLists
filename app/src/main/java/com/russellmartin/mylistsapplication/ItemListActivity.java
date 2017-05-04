@@ -43,7 +43,15 @@ public class ItemListActivity extends AppCompatActivity
     ActivityListBinding binding;
     TodosQueryHandler handler;
     TodosQueryHandler h;
+    DatabaseHelper dbHelper = new DatabaseHelper(this);
+    SQLiteDatabase db;
 
+    public void clearListofTodos() {
+        db = dbHelper.getWritableDatabase();
+        String[] arguments = new String[1];
+        arguments[0] = String.valueOf(l.listID.get());
+        db.delete(MyListsContract.TodosEntry.TABLE_NAME, MyListsContract.TodosEntry.COLUMN_LIST + "=?", arguments);
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -95,7 +103,7 @@ public class ItemListActivity extends AppCompatActivity
                                 handler.startDelete(1, null, uri
                                         , selection, arguments);
 
-                               /* h.startDelete(1, null, u, s, args);*/
+                               clearListofTodos();
 
                             }
                         })
